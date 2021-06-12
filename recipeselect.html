@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="stylesheet" href="style.css">
+   <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+</head>
+<body>
+   <button class="addRowButton" id="Beanweight" onclick="addBeanwieghtRow()">커피콩 중량</button>
+   <button class="addRowButton" id="Bloom" onclick="addBloomRow()">뜸 들이기</button>
+   <button class="addRowButton" id="pour" onclick="addPourRow()">붓기</button>
+   <button class="addRowButton" id="wait" onclick="addwaitRow()">기다림</button>
+   <button class="addRowButton" id="end" onclick="endRecipe()">제조 완료</button>
+
+   <div id="Block">
+      <table id="RecipeTable" border="2">
+         <!-- td에 옵션 rowspan: 지정 행수만큼 / colspan: 지정 열 수 만큼ㅋ -->
+        
+      </table>
+   </div>
+   <button type="submit" onclick="Readtablevalue()">SUBMIT</button>
+   
+   <!-- 값 받는용 테스트 필드 -->
+   <div id="textfield">
+   </div>
+   <script>
+      var row = 0; //테이블 행 값
+      let rowStatus = [];
+      
+      const RecipeTable = document.getElementById("RecipeTable");
+
+      function addBeanwieghtRow() {
+         const BeanWeightRow = RecipeTable.insertRow(row);
+         rowStatus[row] = 1; // 커피콩 중량의 status
+         row = row + 1;
+         
+         const newCell1 = BeanWeightRow.insertCell(0);
+         newCell1.innerHTML = '커피콩 중량';
+         const newCell2 = BeanWeightRow.insertCell(1);
+         newCell2.innerHTML = '<input type="text" class="col1" name="weight" maxlength="4" size="8">g</input>';
+         const deleteCell = BeanWeightRow.insertCell(2);
+         deleteCell.innerHTML = '<input type="button" value="삭제" onClick="deleteRow(this)"/>';
+      }
+
+      function addBloomRow() {
+         const BloomRow = RecipeTable.insertRow(row);
+         rowStatus[row] = 2;
+         row = row + 1;
+
+         const newCell1 = BloomRow.insertCell(0);
+         newCell1.innerHTML = '뜸 들이기';
+         const newCell2 = BloomRow.insertCell(1);
+         newCell2.innerHTML = '<input type="text" class="col1" name="time" maxlength="3" size="8">s</input>';
+         const newCell3 = BloomRow.insertCell(2);
+         newCell3.innerHTML = '<input type="text" class="col2" name="water" maxlength="4" size="8">ml</input>';
+         const deleteCell = BloomRow.insertCell(3);
+         deleteCell.innerHTML = '<input type="button" value="삭제" onClick="deleteRow(this)">';
+      }
+
+      function addPourRow() {
+         const PourRow = RecipeTable.insertRow(row);
+         rowStatus[row] = 3;
+         row = row + 1;
+
+         const newCell1 = PourRow.insertCell(0);
+         newCell1.innerHTML = '물 붓기';
+         const newCell2 = PourRow.insertCell(1);
+         newCell2.innerHTML = '<input type="text" name="time" id="col1" maxlength="3" size="8"/>s';
+         const newCell3 = PourRow.insertCell(2);
+         newCell3.innerHTML = '<input type="text" name="water" id="col2" maxlength="4" size="8"/>ml';
+         const deleteCell = PourRow.insertCell(3);
+         deleteCell.innerHTML = '<input type="button" value="삭제" onClick="deleteRow(this)">';
+      }
+
+      function addwaitRow() {
+         const WaitRow = RecipeTable.insertRow(row);
+         rowStatus[row] = 4;
+         row = row + 1;
+
+         const newCell1 = WaitRow.insertCell(0);
+         newCell1.innerHTML = '<span class="headname">기다려주세요</span>';
+         const newCell2 = WaitRow.insertCell(1);
+         newCell2.innerHTML = '<input type="text" id="time" name="" maxlength="4" size="8"/>s';
+         const deleteCell = WaitRow.insertCell(2);
+         deleteCell.innerHTML = '<input type="button" value="삭제" onClick="deleteRow(this)">';
+      }
+
+      // 행 삭제하는 버튼실행시 작동함
+      function deleteRow(obj) {
+      var index = obj.parentNode.parentNode.rowIndex;
+      var table = document.getElementById("RecipeTable");
+      table.deleteRow(index);
+         if(row = 1) {
+            rowStatus.pop();
+            row = 0;
+         } else {
+            rowStatus.pop();
+            row = row - 1;
+         }
+      }
+
+      function endRecipe() {
+         const endRecipe = RecipeTable.insertRow(row);
+         rowStatus[row] = 5; // 끝내는 status 5
+         row = row + 1;
+
+         const newCell1 = endRecipe.insertCell(0);
+         newCell1.innerHTML = '제조 완료';
+         const deleteCell = endRecipe.insertCell(1);
+         deleteCell.innerHTML = '<input type="button" value="삭제" onClick="deleteRow(this)">';
+      }
+      
+      function Readtablevalue() {
+         let t1 = "";
+         var rowlength = RecipeTable.getElementsByTagName('tr').length;
+         
+         for(var i=0; i < rowlength; i++){
+            switch(rowStatus[i]) {
+               case 1:
+                  $("#RecipeTable tr").eq(i).each(function() {
+                     var tr = $(this).find("td").eq(0).text();
+                     
+                     t1 += tr + "\t";
+                     tr = $(this).find("td input").eq(0).val();
+                     
+                     t1 += tr + "g \t";
+                     tr = $(this).find("td input").eq(1).val();
+                     if(tr != "삭제")  t1 += tr + "\t";
+                     t1 = t1 + "\n";
+                     return false;
+                  });
+                  break;
+               case 2:
+                  $("#RecipeTable tr").eq(i).each(function() {
+                     var tr = $(this).find("td").eq(0).text();
+                     
+                     t1 += tr + "\t";
+                     tr = $(this).find("td input").eq(0).val();
+                     
+                     t1 += tr + "ml \t";
+                     tr = $(this).find("td input").eq(1).val();
+                     if(tr != "삭제")  t1 += tr + "s \t";
+                     t1 = t1 + "\n";
+                     return false;
+                  });
+                  break;
+               case 3:
+                  $("#RecipeTable tr").eq(i).each(function() {
+                     var tr = $(this).find("td").eq(0).text();
+                     
+                     t1 += tr + "\t";
+                     tr = $(this).find("td input").eq(0).val();
+                     
+                     t1 += tr + "ml \t";
+                     tr = $(this).find("td input").eq(1).val();
+                     if(tr != "삭제")  t1 += tr + "s \t";
+                     t1 = t1 + "\n";
+                     return false;
+                  });
+                  break;
+               case 4:
+                  $("#RecipeTable tr").eq(i).each(function() {
+                     var tr = $(this).find("td").eq(0).text();
+                     
+                     t1 += tr + "\t";
+                     tr = $(this).find("td input").eq(0).val();
+                     
+                     t1 += tr + "s \t";
+                     tr = $(this).find("td input").eq(1).val();
+                     if(tr != "삭제")  t1 += tr + "\t";
+                     t1 = t1 + "\n";
+                     return false;
+                  });
+                  break;
+               case 5:
+                  $("#RecipeTable tr").eq(i).each(function() {
+                     var tr = $(this).find("td").eq(0).text();
+                     
+                     t1 += tr + "\t";
+                     return false;
+                  });
+                  break;
+            }
+            document.getElementById("textfield").innerText = t1;
+         }
+      }
+   </script>
+</body>
+</html>
